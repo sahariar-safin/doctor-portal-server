@@ -7,6 +7,7 @@ const MongoClient = require('mongodb').MongoClient;
 require('dotenv').config()
 app.use(cors())
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 
 const uri = `mongodb+srv://${ process.env.DB_USER }:${ process.env.DB_PASS }@cluster0.gopg3.mongodb.net/${ process.env.DB_NAME }?retryWrites=true&w=majority`;
@@ -14,11 +15,14 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 client.connect(err => {
     const bookings = client.db(`${ process.env.DB_NAME }`).collection("booking");
 
+    console.log(err);
     app.post('/booking', (req, res) => {
         bookings.insertOne(req.body)
-            .then(response => console.log(response))
+            .then(response => {
+                console.log(response);
+                res.send(response);
+            })
     })
-
 });
 
 
