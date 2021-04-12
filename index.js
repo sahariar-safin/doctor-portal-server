@@ -19,10 +19,17 @@ client.connect(err => {
     app.post('/booking', (req, res) => {
         bookings.insertOne(req.body)
             .then(response => {
-                console.log(response);
                 res.send(response);
             })
     })
+
+    app.post('/appointment', (req, res) => {
+        bookings.find({ appointmentDate: req.body.date })
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
+    })
+
 });
 
 
