@@ -35,17 +35,16 @@ client.connect(err => {
     })
 
     app.post('/uploadDoctorImage', (req, res) => {
-        // const image = req.files.image;
-        const newImage = req.files.image.data;
-        const encImg = newImage.toString('base64')
+        const file = req.files.image;
+        const newImg = file.data;
 
-        const Img = {
-            contentType: req.files.image.mimetype,
-            size: req.files.image.size,
-            img: Buffer.from(encImg, 'base64')
-        }
+        var image = {
+            contentType: file.mimetype,
+            size: file.size,
+            img: Buffer.from(newImg).toString('base64')
+        };
 
-        console.log(Img.img);
+        res.send(image)
     })
 
     app.post('/addDoctor', (req, res) => {
