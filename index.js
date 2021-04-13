@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const fs = require('fs-extra')
 const app = express()
 const port = process.env.PORT || 5000;
 const MongoClient = require('mongodb').MongoClient;
@@ -19,7 +20,6 @@ client.connect(err => {
     const bookings = client.db(`${ process.env.DB_NAME }`).collection("booking");
     const doctors = client.db(`${ process.env.DB_NAME }`).collection("doctors");
 
-    console.log(err);
     app.post('/booking', (req, res) => {
         bookings.insertOne(req.body)
             .then(response => {
@@ -35,11 +35,17 @@ client.connect(err => {
     })
 
     app.post('/uploadDoctorImage', (req, res) => {
-        const image = req.files.image;
-        image.mv(`${ __dirname }/doctorImage/${ image.name }`, err => {
-            console.log(err);
-            res.send(`http://localhost:5000/${ image.name }`);
-        })
+        // const image = req.files.image;
+        const newImage = req.files.image.data;
+        const encImg = newImage.toString('base64')
+
+        const Img = {
+            contentType: req.files.image.mimetype,
+            size: req.files.image.size,
+            img: Buffer.from(encImg, 'base64')
+        }
+
+        console.log(Img.img);
     })
 
     app.post('/addDoctor', (req, res) => {
@@ -49,6 +55,12 @@ client.connect(err => {
             })
     })
 
+    app.get('/doctors', (req, res) => {
+        doctors.find({})
+            .toArray((err, document) => {
+                res.send(document);
+            })
+    })
 });
 
 
