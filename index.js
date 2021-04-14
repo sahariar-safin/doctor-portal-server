@@ -62,12 +62,10 @@ client.connect(err => {
     })
 
     app.post('/isDoctor', (req, res) => {
-        console.log(req.body);
         doctors.find({
             email: req.body.email
         })
             .toArray((err, document) => {
-                console.log(document.length);
                 if (document.length > 0) {
                     res.send(true);
                 }
