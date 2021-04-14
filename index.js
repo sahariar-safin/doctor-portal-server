@@ -60,6 +60,14 @@ client.connect(err => {
                 res.send(document);
             })
     })
+
+    app.get('/checkDoctor', (req, res) => {
+        doctors.find({})
+            .toArray((err, document) => {
+                res.send(document);
+            })
+    })
+
 });
 
 
